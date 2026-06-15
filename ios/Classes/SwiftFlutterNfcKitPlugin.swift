@@ -35,6 +35,7 @@ public class SwiftFlutterNfcKitPlugin: NSObject, FlutterPlugin, NFCTagReaderSess
     var result: FlutterResult?
     var tag: NFCTag?
     var multipleTagMessage: String?
+    var isActive: Bool = false
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "flutter_nfc_kit", binaryMessenger: registrar.messenger())
@@ -359,6 +360,7 @@ public class SwiftFlutterNfcKitPlugin: NSObject, FlutterPlugin, NFCTagReaderSess
         } else if call.method == "finish" {
             self.result?(FlutterError(code: "406", message: "Session not active", details: nil))
             self.result = nil
+            self.isActive = false
             
             if let session = session {
                 let arguments = call.arguments as! [String: Any?]
@@ -375,7 +377,7 @@ public class SwiftFlutterNfcKitPlugin: NSObject, FlutterPlugin, NFCTagReaderSess
                 }
                 self.session = nil
             }
-            
+
             tag = nil
             result(nil)
         } else if call.method == "setIosAlertMessage" {
@@ -423,11 +425,13 @@ public class SwiftFlutterNfcKitPlugin: NSObject, FlutterPlugin, NFCTagReaderSess
     }
     
     // from NFCTagReaderSessionDelegate
-    public func tagReaderSessionDidBecomeActive(_: NFCTagReaderSession) {}
+    public func tagReaderSessionDidBecomeActive(_: NFCTagReaderSession) {
+        self.isActive = true
+    }
     
     // from NFCTagReaderSessionDelegate
-    public func tagReaderSession(_: NFCTagReaderSession, didInvalidateWithError error: Error) {
-        guard result != nil else { return; }
+    public func tagReaderSession(_ session: NFCTagReaderSession, didInvalidateWithError error: Error) {
+        guard result != nil, self.session == session, self.isActive else { return; }
         
         if let nfcError = error as? NFCReaderError {
             NSLog("Got NFCError when reading NFC: %@", nfcError.localizedDescription)
@@ -445,7 +449,7 @@ public class SwiftFlutterNfcKitPlugin: NSObject, FlutterPlugin, NFCTagReaderSess
         }
         
         result = nil
-        session = nil
+        self.session = nil
         tag = nil
     }
     

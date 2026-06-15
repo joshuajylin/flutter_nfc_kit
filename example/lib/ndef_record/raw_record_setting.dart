@@ -9,11 +9,11 @@ class NDEFRecordSetting extends StatefulWidget {
       : record = record ?? ndef.NDEFRecord(),
         super(key: key);
   @override
-  _NDEFRecordSetting createState() => _NDEFRecordSetting();
+  State<NDEFRecordSetting> createState() => _NDEFRecordSetting();
 }
 
 class _NDEFRecordSetting extends State<NDEFRecordSetting> {
-  GlobalKey _formKey = new GlobalKey<FormState>();
+  final GlobalKey _formKey = GlobalKey<FormState>();
   late TextEditingController _identifierController;
   late TextEditingController _payloadController;
   late TextEditingController _typeController;
@@ -24,27 +24,21 @@ class _NDEFRecordSetting extends State<NDEFRecordSetting> {
     super.initState();
 
     if (widget.record.id == null) {
-      _identifierController =
-          new TextEditingController.fromValue(TextEditingValue(text: ""));
+      _identifierController = TextEditingController.fromValue(TextEditingValue(text: ""));
     } else {
-      _identifierController = new TextEditingController.fromValue(
-          TextEditingValue(text: widget.record.id!.toHexString()));
+      _identifierController = TextEditingController.fromValue(TextEditingValue(text: widget.record.id!.toHexString()));
     }
     if (widget.record.payload == null) {
+      _payloadController = TextEditingController.fromValue(TextEditingValue(text: ""));
+    } else {
       _payloadController =
-          new TextEditingController.fromValue(TextEditingValue(text: ""));
-    } else {
-      _payloadController = new TextEditingController.fromValue(
-          TextEditingValue(text: widget.record.payload!.toHexString()));
+          TextEditingController.fromValue(TextEditingValue(text: widget.record.payload!.toHexString()));
     }
-    if (widget.record.encodedType == null &&
-        widget.record.decodedType == null) {
+    if (widget.record.encodedType == null && widget.record.decodedType == null) {
       // bug in ndef package (fixed in newest version)
-      _typeController =
-          new TextEditingController.fromValue(TextEditingValue(text: ""));
+      _typeController = TextEditingController.fromValue(TextEditingValue(text: ""));
     } else {
-      _typeController = new TextEditingController.fromValue(
-          TextEditingValue(text: widget.record.type!.toHexString()));
+      _typeController = TextEditingController.fromValue(TextEditingValue(text: widget.record.type!.toHexString()));
     }
     _dropButtonValue = ndef.TypeNameFormat.values.indexOf(widget.record.tnf);
   }
@@ -84,10 +78,8 @@ class _NDEFRecordSetting extends State<NDEFRecordSetting> {
                                   child: Text('absoluteURI'),
                                   value: 3,
                                 ),
-                                DropdownMenuItem(
-                                    child: Text('nfcExternal'), value: 4),
-                                DropdownMenuItem(
-                                    child: Text('unchanged'), value: 5),
+                                DropdownMenuItem(child: Text('nfcExternal'), value: 4),
+                                DropdownMenuItem(child: Text('unchanged'), value: 5),
                                 DropdownMenuItem(
                                   child: Text('unknown'),
                                   value: 6,
@@ -100,57 +92,44 @@ class _NDEFRecordSetting extends State<NDEFRecordSetting> {
                               },
                             ),
                             TextFormField(
-                              decoration:
-                                  InputDecoration(labelText: 'identifier'),
+                              decoration: InputDecoration(labelText: 'identifier'),
                               validator: (v) {
-                                return v!.trim().length % 2 == 0
-                                    ? null
-                                    : 'length must be even';
+                                return v!.trim().length % 2 == 0 ? null : 'length must be even';
                               },
                               controller: _identifierController,
                             ),
                             TextFormField(
                               decoration: InputDecoration(labelText: 'type'),
                               validator: (v) {
-                                return v!.trim().length % 2 == 0
-                                    ? null
-                                    : 'length must be even';
+                                return v!.trim().length % 2 == 0 ? null : 'length must be even';
                               },
                               controller: _typeController,
                             ),
                             TextFormField(
                               decoration: InputDecoration(labelText: 'payload'),
                               validator: (v) {
-                                return v!.trim().length % 2 == 0
-                                    ? null
-                                    : 'length must be even';
+                                return v!.trim().length % 2 == 0 ? null : 'length must be even';
                               },
                               controller: _payloadController,
                             ),
                             ElevatedButton(
                               child: Text('OK'),
                               onPressed: () {
-                                if ((_formKey.currentState as FormState)
-                                    .validate()) {
+                                if ((_formKey.currentState as FormState).validate()) {
                                   Navigator.pop(
                                       context,
                                       ndef.NDEFRecord(
-                                          tnf: ndef.TypeNameFormat
-                                              .values[_dropButtonValue],
-                                          type:
-                                              (_typeController.text).toBytes(),
-                                          id: (_identifierController.text)
-                                              .toBytes(),
-                                          payload: (_payloadController.text)
-                                              .toBytes()));
+                                          tnf: ndef.TypeNameFormat.values[_dropButtonValue],
+                                          type: (_typeController.text).toBytes(),
+                                          id: (_identifierController.text).toBytes(),
+                                          payload: (_payloadController.text).toBytes()));
                                 }
                               },
                             ),
                             ElevatedButton(
                               child: Text('Delete'),
                               onPressed: () {
-                                if ((_formKey.currentState as FormState)
-                                    .validate()) {
+                                if ((_formKey.currentState as FormState).validate()) {
                                   Navigator.pop(context, 'Delete');
                                 }
                               },

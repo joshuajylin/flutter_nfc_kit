@@ -8,11 +8,11 @@ class NDEFTextRecordSetting extends StatefulWidget {
       : record = record ?? ndef.TextRecord(language: 'en', text: ''),
         super(key: key);
   @override
-  _NDEFTextRecordSetting createState() => _NDEFTextRecordSetting();
+  State<NDEFTextRecordSetting> createState() => _NDEFTextRecordSetting();
 }
 
 class _NDEFTextRecordSetting extends State<NDEFTextRecordSetting> {
-  GlobalKey _formKey = new GlobalKey<FormState>();
+  final GlobalKey _formKey = GlobalKey<FormState>();
   late TextEditingController _languageController;
   late TextEditingController _textController;
   late int _dropButtonValue;
@@ -21,10 +21,8 @@ class _NDEFTextRecordSetting extends State<NDEFTextRecordSetting> {
   initState() {
     super.initState();
 
-    _languageController = new TextEditingController.fromValue(
-        TextEditingValue(text: widget.record.language!));
-    _textController = new TextEditingController.fromValue(
-        TextEditingValue(text: widget.record.text!));
+    _languageController = TextEditingController.fromValue(TextEditingValue(text: widget.record.language!));
+    _textController = TextEditingController.fromValue(TextEditingValue(text: widget.record.text!));
     _dropButtonValue = ndef.TextEncoding.values.indexOf(widget.record.encoding);
   }
 
@@ -47,10 +45,8 @@ class _NDEFTextRecordSetting extends State<NDEFTextRecordSetting> {
                             DropdownButton(
                               value: _dropButtonValue,
                               items: [
-                                DropdownMenuItem(
-                                    child: Text('UTF-8'), value: 0),
-                                DropdownMenuItem(
-                                    child: Text('UTF-16'), value: 1),
+                                DropdownMenuItem(child: Text('UTF-8'), value: 0),
+                                DropdownMenuItem(child: Text('UTF-16'), value: 1),
                               ],
                               onChanged: (value) {
                                 setState(() {
@@ -59,12 +55,9 @@ class _NDEFTextRecordSetting extends State<NDEFTextRecordSetting> {
                               },
                             ),
                             TextFormField(
-                              decoration:
-                                  InputDecoration(labelText: 'language'),
+                              decoration: InputDecoration(labelText: 'language'),
                               validator: (v) {
-                                return v!.trim().length % 2 == 0
-                                    ? null
-                                    : 'length must not be blank';
+                                return v!.trim().length % 2 == 0 ? null : 'length must not be blank';
                               },
                               controller: _languageController,
                             ),
@@ -75,13 +68,11 @@ class _NDEFTextRecordSetting extends State<NDEFTextRecordSetting> {
                             ElevatedButton(
                               child: Text('OK'),
                               onPressed: () {
-                                if ((_formKey.currentState as FormState)
-                                    .validate()) {
+                                if ((_formKey.currentState as FormState).validate()) {
                                   Navigator.pop(
                                       context,
                                       ndef.TextRecord(
-                                          encoding: ndef.TextEncoding
-                                              .values[_dropButtonValue],
+                                          encoding: ndef.TextEncoding.values[_dropButtonValue],
                                           language: (_languageController.text),
                                           text: (_textController.text)));
                                 }
