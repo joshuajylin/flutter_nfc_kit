@@ -5,8 +5,7 @@ pluginManagement {
         mavenCentral()
     }
     plugins {
-        id 'com.android.library' version "${AGPVersion}"
-        id 'org.jetbrains.kotlin.android' version "${KotlinVersion}"
+        id 'com.android.library' version "${AGPVersion}" apply false
     }
 }
 

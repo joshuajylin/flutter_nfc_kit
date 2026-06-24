@@ -1,6 +1,5 @@
 plugins {
     id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
 }
 
 allprojects {
@@ -18,14 +17,10 @@ android {
     namespace 'im.nfc.flutter_nfc_kit'
 
     compileSdkVersion 36
-    
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     sourceSets {
@@ -37,6 +32,12 @@ android {
     }
     lintOptions {
         disable 'InvalidPackage'
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
     }
 }
 
